@@ -15,7 +15,7 @@ export default function JobCards() {
     <div className="flex flex-col gap-4 w-full">
       {jobs.map((item, index) => (
 
-        (item.title.includes(location) || item.title.includes(location.toUpperCase()) && 
+       ( (item.title.toLowerCase().includes(location.toLowerCase()) || (item.company.toLowerCase().includes(location.toLowerCase())) ) && 
         <div
           key={index}
           className="flex flex-col gap-3 bg-white border border-gray-200 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-200"

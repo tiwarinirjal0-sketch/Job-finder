@@ -1,7 +1,13 @@
+import dotenv from "dotenv";
+dotenv.config({ path: "../.env" });
+
+
+
 import { MongoClient } from "mongodb"
 
 
-const client = new MongoClient("mongodb+srv://tiwarinirjal0_db_user:15October@cluster0.i0i1k8h.mongodb.net/?appName=Cluster0")
+
+const client = new MongoClient(process.env.MONGO_URI)
 
 async function main() {
   await client.connect()

@@ -34,7 +34,7 @@ export default function Search(){
             value={location}
             onChange={(e)=>setLocation(e.target.value)}
             type="text" 
-            placeholder="Enter your Location"
+            placeholder="Enter your Location or company name or jobtitle"
             className="border rounded-xl px-4 border-none"
             />
             <Button 
