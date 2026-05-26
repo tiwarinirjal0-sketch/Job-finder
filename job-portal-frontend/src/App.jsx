@@ -10,7 +10,8 @@ export default function App(){
   const [location,setLocation] = useState("");
   const[buttonClicked, setButtonClicked] = useState(false);
   const [jobs,setJobs] = useState([]);
-  const [signUpClicked, setSignUpClicked] = useState(false)
+  const [signUpClicked, setSignUpClicked] = useState(false);
+  
 
   
 

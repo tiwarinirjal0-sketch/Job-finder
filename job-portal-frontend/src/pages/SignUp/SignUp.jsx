@@ -1,15 +1,47 @@
-import { useContext } from "react";
+import { useContext,useRef } from "react";
 import { JobContext } from "../../../context/jobs";
-
+import { useEffect } from "react";
 
 
 export default function SignUp(){
     const {signUpClicked} = useContext(JobContext)
 
+    const nameRef = useRef()
+    const emailRef = useRef()
+    const passRef = useRef()
+
+
+    
+
+
+
+    
+
+    const handleSubmit = async()=>{
+        try{
+          const res = await fetch("http://localhost:5000/users",
+            {
+                method : "POST",
+                headers: { "Content-Type": "application/json" },
+                body : JSON.stringify( {
+                    username: nameRef.current.value,
+                    email : emailRef.current.value,
+                    password : passRef.current.value
+                })
+            }
+          )
+          const data = await res.json()
+          console.log(data)
+        }
+        catch(err){
+           console.log(`error:${err}`)
+        }
+    }
+
     const inputDetails = [
-        {label:"Full Name", placeholder:"Enter your full-name "},
-        {label:"E-mail", placeholder:"Enter your email"},
-        {label:"Password", placeholder:"Enter your password"}
+        {label:"Full Name", placeholder:"Enter your full-name ",ref:nameRef},
+        {label:"E-mail", placeholder:"Enter your email",ref:emailRef},
+        {label:"Password", placeholder:"Enter your password",ref:passRef}
     ]
 
     if(!signUpClicked)return
@@ -24,6 +56,8 @@ export default function SignUp(){
                 <div>
                     <h2>{item.label}</h2>
                     <input 
+                        ref={item.ref}
+                        
                         type="text" 
                         className="border w-full rounded-lg px-2 py-1"
                         placeholder={item.placeholder}
@@ -35,7 +69,7 @@ export default function SignUp(){
              
              <button
              type="submit"
-
+             onClick={handleSubmit}
              className="bg-yellow-300 w-45 px-2 py-1 rounded-lg font-semibold text-emerald-600"
              >Create Account</button>
              
