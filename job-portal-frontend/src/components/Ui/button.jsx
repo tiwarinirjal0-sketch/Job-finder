@@ -7,5 +7,5 @@ export default function Button({style, children}){
 
      return(<button className={`w-[auto]   ${style}`} onClick={()=>setSignUpClicked(prev=>!prev)}>
         {children}
-     </button>   )
+     </button>)
 }

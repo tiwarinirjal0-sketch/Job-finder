@@ -1,54 +1,85 @@
 import dotenv from "dotenv";
-dotenv.config({path:"../.env"})
+dotenv.config();
 
+import express from "express";
+import cors from "cors";
+import connection from "./db/index.js";
+import userInformation from "./models/shema.js";
+import bcrypt from "bcryptjs"
 
-import { Scraper } from '../scraper/scraper.js';
-import express from 'express';
-import cors from 'cors';
-import {MongoClient} from "mongodb"
+connection()
 
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
-const client = new MongoClient(process.env.MONGO_URI)
+//Middile wares
 
+app.use(express.json());
+app.use (cors());
 
-await client.connect()
-const db = client.db("practiceDB")
-const users = db.collection("users")  
+//route
+app.get("/home",(req,res)=>{
+    res.send("Server Started")
+})
 
-app.use(cors())
-app.use(express.json())
+app.post("/users", async (req, res)=>{
+   
+  const {name,email,password} = req.body
 
-app.get("/",((req,res) =>{
-    res.json({message:"Hello"})
-    
-}))
+  if(name && email && password ){
+   try {
 
-// app.get("/hello", async (req, res) => {
-//     try {
-       //const jobs = await users.find().toArray()
-       //res.json(jobs)
-        
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ error: "Failed" });
-//     }
-// });
+      const EmailExists = await userInformation.findOne({email})
+      
+      if(EmailExists){console.log("it exists")}
+      const hashedPassword = await bcrypt.hash(password, 10)
+      const user = await userInformation.create({
+       name:name,
+       email:email,
+       password : hashedPassword,
+    })
+    console.log("sucessful interception");
+    res.status(201).json({message: "User created",user});
+   } catch (error) {
+     res.send(error)
+   }
+  }else{
+    res.send("why not data")
+  }
+})
 
+//login route
 
-app.post("/users",async(req,res)=>{
-    try{
-    //    const userDetails = db.collection("userDetails")
-    //    await userDetails.insertOne(req.body)
-       res.send(req.body)
-    }catch (err) {
-        console.error(err);
-        res.status(500).json({ error:"error"});
+app.post("/login", async (req,res)=>{
+
+    const {email, password} = req.body;
+
+    if(!email||!password) return res.status(201).json({error:"enter the pass"})
+
+    try {
+      const user = await userInformation.findOne({email})
+      if(!user) return res.status(404).json({error:"user not found"})
+      
+      const isMatch = await bcrypt.compare(password, user.password);
+      if(!isMatch) return res.status(404).json({error : "password is wrong"})
+      
+      res.json({status:"sucessful logged in"})
+      console.log("succcessfully-loogedin")
+
+     // const token = jwt.sign((=)
+    //   { id: user._id, email: user.email },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: "1d" }
+    // );
+    //  res.status(200).json({ message: "Login successful", token });
+      
+    } catch (error) {
+      console.log("error: ", error)
     }
 
 })
 
-app.listen(port, () => {
-    console.log(`Server running on ${port}`);
-});
+
+app.listen(port, ()=>{
+    console.log(`Server is running on ${port}`)
+})
