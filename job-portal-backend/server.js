@@ -6,6 +6,7 @@ import cors from "cors";
 import connection from "./db/index.js";
 import userInformation from "./models/shema.js";
 import bcrypt from "bcryptjs"
+import jwt from "jsonwebtoken"
 
 connection()
 
@@ -64,15 +65,18 @@ app.post("/login", async (req,res)=>{
       const isMatch = await bcrypt.compare(password, user.password);
       if(!isMatch) return res.status(404).json({error : "pass error"})
       
-      res.json({status:"sucessful logged in"})
-      console.log("succcessfully-loogedin")
+      
 
-     // const token = jwt.sign((=)
-    //   { id: user._id, email: user.email },
-    //   process.env.JWT_SECRET,
-    //   { expiresIn: "1d" }
-    // );
-    //  res.status(200).json({ message: "Login successful", token });
+     const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+      );
+     res.status(200).json({
+       message: "Login successful", 
+       token ,
+       email : user.email
+      });
       
     } catch (error) {
       console.log("error: ", error)

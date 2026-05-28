@@ -39,6 +39,9 @@ export default function SignUp() {
          }else if(data.error==="pass error"){
             setPassError(true)
          }else{
+            console.log(data.token)
+            localStorage.setItem("token", data.token)
+            localStorage.setItem("user e-mail", data.email )
             setLoginSuccess(true)
             setEmailError(false)
             setPassError(false)
