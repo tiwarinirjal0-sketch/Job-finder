@@ -1,13 +1,24 @@
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { JobContext } from "../../../context/jobs";
 
 export default function SignUp() {
     const { signUpClicked } = useContext(JobContext)
 
+    const [emailError, setEmailError] = useState(false)
+    const [passError, setPassError] = useState(false)
+    const [loginSuccess, setLoginSuccess] = useState(false)
+
     const emailRef = useRef()
     const passRef = useRef()
 
+    useEffect(()=>{
+        // if(!emailError)setEmailError(true)
+    },[emailError,passError,loginSuccess])
+
     const handleSubmit = async () => {
+          
+          setEmailError(false)   // ✅ reset before fetch
+          setPassError(false)
          const res = await fetch("http://localhost:5000/login", 
             {
                 method : "POST",
@@ -22,7 +33,17 @@ export default function SignUp() {
             }
          )
          const data = await res.json()
-         console.log(data)
+
+         if(data.error==="email error"){
+            setEmailError(true)
+         }else if(data.error==="pass error"){
+            setPassError(true)
+         }else{
+            setLoginSuccess(true)
+            setEmailError(false)
+            setPassError(false)
+         }
+         
 
     }
 
@@ -48,9 +69,12 @@ export default function SignUp() {
                                 className="border w-full rounded-lg px-2 py-1"
                                 placeholder={item.placeholder}
                             />
-                            <p className="text-red-700 text-sm">
-                                {item.label === "E-mail" ? "Enter Correct Email" : "Enter Correct Password"}
-                            </p>
+                          {item.label === "E-mail" && emailError && (
+                             <p className="text-red-700 text-sm">Enter Correct Email</p>
+                        )}
+                        {item.label === "Password" && passError && (
+                                <p className="text-red-700 text-sm">Enter Correct Password</p>
+                        )}
                         </div>
                     ))}
                 </div>
@@ -60,6 +84,7 @@ export default function SignUp() {
                     onClick={handleSubmit}
                     className="bg-yellow-300 w-45 px-2 py-1 rounded-lg font-semibold text-emerald-600"
                 >Login</button>
+                {loginSuccess &&(<p className="text-green-500">Succesfully Logged in</p>)}
 
                 <p className="text-blue-900 cursor-pointer">Don't have an account?</p>
 

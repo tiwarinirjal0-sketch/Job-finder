@@ -37,7 +37,8 @@ app.post("/users", async (req, res)=>{
        name:name,
        email:email,
        password : hashedPassword,
-    })
+        })
+
     console.log("sucessful interception");
     res.status(201).json({message: "User created",user});
    } catch (error) {
@@ -54,14 +55,14 @@ app.post("/login", async (req,res)=>{
 
     const {email, password} = req.body;
 
-    if(!email||!password) return res.status(201).json({error:"enter the pass"})
+    if(!email||!password) return res.status(400).json({error:"enter the pass"})
 
     try {
       const user = await userInformation.findOne({email})
-      if(!user) return res.status(404).json({error:"user not found"})
+      if(!user) return res.status(404).json({error:"email error"})
       
       const isMatch = await bcrypt.compare(password, user.password);
-      if(!isMatch) return res.status(404).json({error : "password is wrong"})
+      if(!isMatch) return res.status(404).json({error : "pass error"})
       
       res.json({status:"sucessful logged in"})
       console.log("succcessfully-loogedin")
