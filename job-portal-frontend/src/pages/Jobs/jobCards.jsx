@@ -9,7 +9,7 @@ export default function JobCards() {
     setBookmarked((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
-  if (!buttonClicked) return null;
+  
 
   return (
     <div className="flex flex-col gap-4 w-full">

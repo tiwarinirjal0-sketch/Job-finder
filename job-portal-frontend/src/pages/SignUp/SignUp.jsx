@@ -1,104 +1,183 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { JobContext } from "../../../context/jobs";
+import { useContext, useEffect, useState } from "react"
+import { JobContext } from "../../../context/jobs"
+import CreateAccount from "./Create"
+import { useNavigate } from "react-router-dom"
 
-export default function SignUp() {
-    const { signUpClicked } = useContext(JobContext)
 
-    const [emailError, setEmailError] = useState(false)
-    const [passError, setPassError] = useState(false)
-    const [loginSuccess, setLoginSuccess] = useState(false)
+export default function SignUp(){
 
-    const emailRef = useRef()
-    const passRef = useRef()
+    const navigate = useNavigate()
 
-    useEffect(()=>{
-        // if(!emailError)setEmailError(true)
-    },[emailError,passError,loginSuccess])
+    const [signUp, setSignUp] = useState(true)
+    const {signUpClicked} = useContext(JobContext)
+    
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [userName, setUserName] = useState("")
 
-    const handleSubmit = async () => {
-          
-          setEmailError(false)   // ✅ reset before fetch
-          setPassError(false)
-         const res = await fetch("http://localhost:5000/login", 
-            {
+    const [userNameErr, setUserNameErr] = useState(false)
+    const [emailErr, setEmailErr] = useState(false)
+    const [passErr, setPassErr] = useState(false)
+    const [loggedIn, setLoggedIn] = useState(false)
+
+
+    // useEffect(()=>{
+
+    // },[userNameErr,emailErr,passErr,loggedIn])
+
+
+
+
+    const baseCss = "w-40 h-8 border"
+
+    // useEffect(()=>{
+    //    console.log({
+    //     email:email,
+    //     username:userName,
+    //     password:password
+    //    })
+    // },[email, password, userName])
+
+    const register = async()=>{
+        try {
+            const res = await fetch("http://localhost:5000/api/auth/register",{
                 method : "POST",
-                headers:{
+                headers : {
                     "Content-Type" : "application/json"
                 },
+                body : JSON.stringify( {
+                    "username" : userName,
+                    "email" : email,
+                    "password" : password
+                })
+            })
+            const data = await res.json()
+
+             if(!res.ok) {
+                  if(data.error == "Username err"){
+                setUserNameErr(true)
+            }else{
+                    setEmailErr(true)
+                }
+             return
+             }
+           
+             localStorage.setItem("token", data.token)
+             console.log("succesfully token recieved", data.token)
+            
+
+
+        } catch (error) {
+            console.log("error : ", error)
+        }
+    }
+    const handleLogIn = async()=>{
+        try {
+            const res = await fetch("http://localhost:5000/api/auth/login", {
+                method : "POST",
+                headers : {
+                    "Content-type" : "application/json",
+                    "Authorization" : `Bearer ${localStorage.getItem("token")}`
+                },
                 body : JSON.stringify({
-                    "email":emailRef.current.value,
-                    "password":passRef.current.value
-                }),
-                
+                    email:email,
+                    password:password
+                })
+
+            })
+            const data = await res.json()
+
+            if(!res.ok){
+                console.log("error")
+                return
             }
-         )
-         const data = await res.json()
 
-         if(data.error==="email error"){
-            setEmailError(true)
-         }else if(data.error==="pass error"){
-            setPassError(true)
-         }else{
-            console.log(data.token)
-            localStorage.setItem("token", data.token)
-            localStorage.setItem("user e-mail", data.email )
-            setLoginSuccess(true)
-            setEmailError(false)
-            setPassError(false)
-         }
-         
+           localStorage.setItem("token", data.token)
+           console.log("token received", data.token)
+           navigate("/")
 
+
+            // console.log(data)
+        } catch (error) {
+            console.log("error", error)
+        }
     }
 
-    const inputDetails = [
-        { label: "E-mail", placeholder: "Enter your email", ref: emailRef },
-        { label: "Password", placeholder: "Enter your password", ref: passRef }
-    ]
 
-    if (!signUpClicked) return
 
-    return (
+    return(
         <>
-            <div className="p-4 w-55 h-105 bg-white overflow-hidden absolute inset-20 rounded-lg flex flex-col items-center justify-between">
-                <h1 className="text-center">Login to your account</h1>
+          
+          <div className="w-60 min-h-90 border border-white absolute inset-0 bg-amber-100 flex flex-col items-center  justify-center gap-5">
+              <div>{signUp?"Create Account":"Login"}</div>
+              
+              {signUp && (<div>
+                <h2>Username</h2>
+                <input 
+                type="text" 
+                onChange={(e)=>{
+                    setUserName(e.target.value),
+                    console.log(email)
+                }}
+                className={baseCss}
+                    />
+                {userNameErr && <p className="text-[12px] text-red-700">Enter the correct Username</p>}
+                
+                
 
-                <div className="flex flex-col gap-4">
-                    {inputDetails.map(item => (
-                        <div>
-                            <h2>{item.label}</h2>
-                            <input
-                                ref={item.ref}
-                                type="text"
-                                className="border w-full rounded-lg px-2 py-1"
-                                placeholder={item.placeholder}
-                            />
-                          {item.label === "E-mail" && emailError && (
-                             <p className="text-red-700 text-sm">Enter Correct Email</p>
-                        )}
-                        {item.label === "Password" && passError && (
-                                <p className="text-red-700 text-sm">Enter Correct Password</p>
-                        )}
-                        </div>
-                    ))}
+              </div>)}
+
+              <div>
+                <h2>Email</h2>
+                  <input
+                  type="text"
+                  onChange={(e)=>{
+                    setEmail(e.target.value)
+                   }}
+                   className={baseCss}
+                   />
+                {emailErr && <p className="text-[12px] text-red-700">Enter the correct E-mail</p>}
+                
+              </div>
+
+                <div>
+                    <h2>Password</h2>
+                    <input 
+                    type="text" 
+                    onChange={(e)=>{
+                    setPassword(e.target.value)
+                    }}
+                    className={baseCss}
+                    /> 
+                     {passErr && <p className="text-[12px] text-red-700">Enter the correct Password</p>}
+                
+
+                    
                 </div>
 
-                <button
-                    type="submit"
-                    onClick={handleSubmit}
-                    className="bg-yellow-300 w-45 px-2 py-1 rounded-lg font-semibold text-emerald-600"
-                >Login</button>
-                {loginSuccess &&(<p className="text-green-500">Succesfully Logged in</p>)}
+               <div className="flex gap-2">
+                    <button 
+                    className="border px-2 bg-blue-600"
+                    onClick={()=>setSignUp(true)}
+                    >
+                    Create Account</button>
+                    <button
+                    className="border px-2 bg-blue-600"
+                    onClick={()=>setSignUp(false)}
+                    >Login</button>
 
-                <p className="text-blue-900 cursor-pointer">Don't have an account?</p>
+               </div>
 
-                <div className="flex gap-2 text-sm">
-                    <div className="w-20 h-8 border">
-                        <span></span>
-                        <span></span>
-                    </div>
-                    <div className="w-20 h-8 border"></div>
-                </div>
-            </div>
+               <button 
+               className="bg-mauve-600 px-3 py-1 rounded-xl text-amber-50"
+               onClick={
+                (signUp)?register:handleLogIn
+               }
+               >{signUp?"Sign Up":"Login"}</button>
+
+               {loggedIn && <h1 className="text-green-600">Logged In successfully</h1>}
+          </div>
+           
         </>
     )
 }

@@ -1,31 +1,42 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 import UserModel from '../model/User.model.js';
 import jwt from 'jsonwebtoken';
 import { hashPassword, comparePassword } from '../utils/helper.js';
+import mongoose from 'mongoose';
+import { connectDB } from '../config/db.js';
+
+connectDB()
+
+
 
 export async function register(req, res) {
     try {
         const { username, password, email, profile } = req.body;
 
         const existingUsername = await UserModel.findOne({ username });
-        if (existingUsername) return res.status(400).send({ error: 'Username already exists!' });
+        if (existingUsername) return res.status(400).send({ error: 'Username err' });
 
         const existingEmail = await UserModel.findOne({ email });
-        if (existingEmail) return res.status(400).send({ error: 'Email already registered!' });
+        if (existingEmail) return res.status(400).send({ error: 'Email err' });
 
         const hashedPassword = await hashPassword(password);
-        await new UserModel({ username, password: hashedPassword, profile: profile || '', email }).save();
+        const newUser = await new UserModel({ username, password: hashedPassword, profile: profile || '', email }).save();
 
-        return res.status(201).send({ msg: 'User Registered Successfully.' });
+        const token = jwt.sign({_id : newUser._id}, process.env.JWT_SECRET_KEY, {expiresIn:'7d'})
+        res.status(201).json({"message":"token sent successfully", token})
+
     } catch (err) {
-        return res.status(500).send(err);
+        return res.status(500).send({err});
     }
 }
 
 export async function login(req, res) {
     try {
-        const { username, password } = req.body;
+        const { email, password } = req.body;
 
-        const user = await UserModel.findOne({ username });
+        const user = await UserModel.findOne({ email });
         if (!user) return res.status(404).send({ error: 'User Not Found' });
 
         const isMatch = await comparePassword(password, user.password);
@@ -33,30 +44,20 @@ export async function login(req, res) {
 
         const token = jwt.sign({ userId: user._id, username: user.username }, process.env.JWT_SECRET_KEY, { expiresIn: '7d' });
 
-        return res.status(200).send({ msg: 'Login Successful', token });
+        return res.status(201).send({ msg: 'Login Successful', token });
     } catch (err) {
-        return res.status(500).send(err);
+        console.error(err)
+        return res.status(400).json({message : err.message});
     }
 }
 
-export async function getUser(req, res) {
+export async function getJobs(req, res){
     try {
-        const { username } = req.params;
-        const user = await UserModel.findOne({ username }).select('-password');
-        if (!user) return res.status(404).send({ error: 'User Not Found' });
-        return res.status(200).send(user);
-    } catch (err) {
-        return res.status(500).send(err);
+        const db = mongoose.connection.db;
+        const jobs = await db.collection("users").find().toArray()
+        return res.status(200).json(jobs)
+    } catch (error) {
+        console.log("error happend", err)
     }
-}
 
-export async function updateUser(req, res) {
-    try {
-        const { userId } = req.user;
-        const data = req.body;
-        await UserModel.findByIdAndUpdate(userId, data);
-        return res.status(200).send({ msg: 'User Updated Successfully' });
-    } catch (err) {
-        return res.status(500).send(err);
-    }
 }

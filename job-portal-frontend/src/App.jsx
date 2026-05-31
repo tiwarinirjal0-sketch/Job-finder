@@ -3,6 +3,7 @@ import Homepage from "./pages/Home/Homepage"
 import JobPostings from "./pages/Jobs/jobPostings"
 import { JobContext } from "../context/jobs";
 import SignUp from "./pages/SignUp/SignUp";
+import { Route, Routes } from "react-router-dom";
 
 
 export default function App(){
@@ -31,9 +32,14 @@ export default function App(){
       }}
     
     >
-      <SignUp />
-      <Homepage />
-      <JobPostings/>
+     <Routes>
+       
+       <Route path="/signup"  element ={<SignUp />} />
+       <Route path="/"  element ={<Homepage />} />
+       <Route path="/jobs"  element ={<JobPostings />} />
+
+     </Routes>
+    
     </JobContext.Provider>
 
 
