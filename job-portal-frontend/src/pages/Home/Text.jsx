@@ -1,7 +1,28 @@
-export default function TextContainer() {
-  return (
-    <div className="text-center px-4 py-10">
+import { useRef } from "react";
 
+
+
+export default function TextContainer() {
+    const fileRef = useRef(null)
+    
+
+    const handleUpload = (e)=>{
+        console.log(e.target.files[0])
+    }
+
+
+  return (
+    
+    <div className="text-center px-4 py-10">
+      
+      <input
+       type="file"
+       className="hidden"
+       ref={fileRef}
+       onChange={handleUpload}
+
+
+        />
       {/* Badge */}
       <div className="inline-flex items-center gap-1.5 bg-blue-100 text-blue-700 text-xs font-medium px-3 py-1.5 rounded-full mb-6">
         🌐 Hiring worldwide
@@ -41,7 +62,9 @@ export default function TextContainer() {
         <button className="inline-flex items-center gap-2 bg-[#4A78ED] hover:bg-[#3a68dd] text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors">
           🔍 Browse jobs
         </button>
-        <button className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-sm font-medium px-6 py-2.5 rounded-lg border border-gray-300 transition-colors">
+        <button 
+        onClick={()=>fileRef.current.click()}
+        className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-sm font-medium px-6 py-2.5 rounded-lg border border-gray-300 transition-colors">
           📄 Upload resume
         </button>
       </div>
