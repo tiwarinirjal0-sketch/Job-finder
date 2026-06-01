@@ -34,12 +34,8 @@ export default function Search(){
         setButtonClicked(true)
         
     }
-
     
-
-
-
-     return(
+    return(
         <div className="w-screen mt-10 flex justify-center gap-1 py-5">
             <input 
             value={location}
