@@ -3,6 +3,7 @@ import Navbar from "./Navbar"
 import ReviewCards from "./reviewcards"
 import TextContainer from "./Text"
 import Search from "./search"
+import JobPostings from "../Jobs/jobPostings"
 
 
 export default function Homepage({location,setLocation,buttonClicked,setButtonClicked}){
@@ -17,6 +18,7 @@ export default function Homepage({location,setLocation,buttonClicked,setButtonCl
                setButtonClicked = {setButtonClicked}
 
              />
+             <JobPostings />
         </div>
     )
 }

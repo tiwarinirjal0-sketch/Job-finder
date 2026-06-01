@@ -36,7 +36,6 @@ export default function App(){
        
        <Route path="/signup"  element ={<SignUp />} />
        <Route path="/"  element ={<Homepage />} />
-       <Route path="/jobs"  element ={<JobPostings />} />
 
      </Routes>
     

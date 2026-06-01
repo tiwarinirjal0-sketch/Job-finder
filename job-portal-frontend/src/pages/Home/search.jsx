@@ -31,11 +31,12 @@ export default function Search(){
         if(!location)return
         console.log(location)
         setLocation("")
-        navigate("/jobs")
+        setButtonClicked(true)
         
     }
 
     
+
 
 
      return(
