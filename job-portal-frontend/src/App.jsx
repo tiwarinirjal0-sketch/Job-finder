@@ -4,6 +4,7 @@ import JobPostings from "./pages/Jobs/jobPostings"
 import { JobContext } from "../context/jobs";
 import SignUp from "./pages/SignUp/SignUp";
 import { Route, Routes } from "react-router-dom";
+import ResumeUploder from "./pages/ResumeUpload/ResumeUpload";
 
 
 export default function App(){
@@ -36,6 +37,7 @@ export default function App(){
        
        <Route path="/signup"  element ={<SignUp />} />
        <Route path="/"  element ={<Homepage />} />
+       <Route path="/resume" element={<ResumeUploder />} />
 
      </Routes>
     

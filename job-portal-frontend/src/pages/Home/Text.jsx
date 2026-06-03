@@ -1,13 +1,46 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 
 export default function TextContainer() {
+    const navigate = useNavigate()
     const fileRef = useRef(null)
+
+    const [file, setFile] = useState(null)
     
 
-    const handleUpload = (e)=>{
-        console.log(e.target.files[0])
+    const handleChange = (e)=>{
+        // console.log(e.target.files[0])
+        setFile(e.target.files[0])
+    }
+    const handleUpload = async()=>{
+     try {
+        const formData = new FormData();
+        formData.append("file", file)
+
+        const res = await fetch("http://localhost:5000/api/auth/Ai", {
+            method:"POST",
+            body: formData,
+            headers : {
+                Authorization : `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+
+        
+
+        const data = await res.text()
+        console.log(data)
+        
+        // console.log("data recieved in the server", data)
+
+        
+        
+
+     } catch (error) {
+        console.log("error in upload", error)
+     }
+
     }
 
 
@@ -19,7 +52,8 @@ export default function TextContainer() {
        type="file"
        className="hidden"
        ref={fileRef}
-       onChange={handleUpload}
+       onChange={handleChange}
+      //  onClick={handleUpload}
 
 
         />
@@ -59,11 +93,13 @@ export default function TextContainer() {
 
       {/* CTA Buttons */}
       <div className="flex flex-wrap justify-center gap-3 mt-8">
-        <button className="inline-flex items-center gap-2 bg-[#4A78ED] hover:bg-[#3a68dd] text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors">
+        <button 
+        onClick={handleUpload}
+        className="inline-flex items-center gap-2 bg-[#4A78ED] hover:bg-[#3a68dd] text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors">
           🔍 Browse jobs
         </button>
         <button 
-        onClick={()=>fileRef.current.click()}
+        onClick={()=>navigate("/resume")}
         className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 text-sm font-medium px-6 py-2.5 rounded-lg border border-gray-300 transition-colors">
           📄 Upload resume
         </button>

@@ -5,6 +5,7 @@ dotenv.config()
 import UserModel from "../model/User.model.js";
 import { comparePassword } from "../utils/helper.js";
 import jwt from "jsonwebtoken"
+import multer from 'multer';
 
 
 
@@ -27,3 +28,12 @@ export const verifyUser  = async(req, res, next)=>{
 
    
 }
+
+const storage = multer.memoryStorage()
+
+export const upload = multer({
+   storage,
+   limits:{
+      fileSize: 10 * 1024 * 1024,
+   }
+})
