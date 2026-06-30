@@ -10,23 +10,36 @@ export default function ResumeUpload(){
     const [displayReview, setDisplayReview] = useState(false)
     
 
-    const handleUpload = (e)=>{
+    const handleChange = (e)=>{
          const file = e.target.files[0]
          setFile(file)
-         
          console.log(file)
-
-
     }
+    
+    const ReviewCreation = async()=>{
+
+        const formData = new FormData()
+        formData.append("file", file)
+
+        const data = await fetch("",{
+            method : "POST",
+            headers : {
+                "AUTHORIZATION" : `Bearer : ${localStorage.getItem("token")}`
+            },
+            body : formData
+        })
+        console.log(data)
+    }
+
 
     return(
         <>
-        <div className="w-full min-h-screen  bg-amber-50 flex flex-col justify-center items-center ">
+        <div className="w-full min-h-screen bg-gray-800 flex flex-col justify-center items-center ">
             <input
              type="file"
              className="hidden"
              ref={fileRef}
-             onChange={handleUpload}
+             onChange={handleChange}
              
 
               />
@@ -39,8 +52,12 @@ export default function ResumeUpload(){
                    
                 <div className="flex gap-1 mt-2">
                    <button
-                    onClick={()=>setDisplayReview(true)}
-                    className="w-25 h-12 px-2 bg-red-500 rounded-2xl ">Generate Review</button>
+                    onClick={async()=>{
+                        await ReviewCreation(),
+                        setDisplayReview(true)}
+                    }
+                    className="w-25 h-12 px-2 bg-red-500 rounded-2xl ">
+                        Generate Review</button>
                    <button className="w-35 h-12 px-2 bg-red-500 rounded-2xl ">Show Matching Details</button>
                 </div>
              </>

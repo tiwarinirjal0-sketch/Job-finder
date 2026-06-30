@@ -14,34 +14,7 @@ export default function TextContainer() {
         // console.log(e.target.files[0])
         setFile(e.target.files[0])
     }
-    const handleUpload = async()=>{
-     try {
-        const formData = new FormData();
-        formData.append("file", file)
-
-        const res = await fetch("http://localhost:5000/api/auth/Ai", {
-            method:"POST",
-            body: formData,
-            headers : {
-                Authorization : `Bearer ${localStorage.getItem("token")}`
-            }
-        })
-
-        
-
-        const data = await res.text()
-        console.log(data)
-        
-        // console.log("data recieved in the server", data)
-
-        
-        
-
-     } catch (error) {
-        console.log("error in upload", error)
-     }
-
-    }
+    
 
 
   return (
@@ -94,7 +67,7 @@ export default function TextContainer() {
       {/* CTA Buttons */}
       <div className="flex flex-wrap justify-center gap-3 mt-8">
         <button 
-        onClick={handleUpload}
+        
         className="inline-flex items-center gap-2 bg-[#4A78ED] hover:bg-[#3a68dd] text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors">
           🔍 Browse jobs
         </button>

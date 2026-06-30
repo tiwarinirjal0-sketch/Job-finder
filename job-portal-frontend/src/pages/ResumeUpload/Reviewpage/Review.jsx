@@ -1,6 +1,5 @@
+
 import Description from "./desriptioncard";
-
-
 
 export default function ReviewPage(){
       
@@ -28,13 +27,11 @@ export default function ReviewPage(){
               "name": "Jane Doe",
               "title": "Senior Software Engineer",
               "avatar_initials": "JD",
+              "summary": "A results-driven software engineer with 7+ years building scalable backend systems and leading cross-functional teams. Passionate about clean architecture, developer experience, and shipping products people love.",
                "contact_details" : [
-
                 {"type":"email","detail":"kadjfkaj@gmial.om"},
                 {"type":"phone","detail":"974880043"},
                 {"type":"location", "detail":"butwal"},
-                
-
                ]
             },
 
@@ -100,30 +97,27 @@ export default function ReviewPage(){
 
       return(
         <>
-         {jobDetails.map(item=>(<div className="w-full min-h-screen bg-mauve-700 grid gap-2  grid-cols-3">
+         {jobDetails.map(item=>(<div className="w-full min-h-screen mt-8 bg-gray-100 grid gap-2 grid-cols-3">
 
-            <div className="bg-red-400 col-span-3 rounded-2xl">
+            <div className="bg-white border border-gray-200 col-span-3 rounded-2xl">
                 <Description name={item.basics.name} role={item.basics.title} avatar_initials={item.basics.avatar_initials} contact_details={item.basics.contact_details}/>
             </div>
 
-            <div className="bg-red-400  col-span-3 rounded-2xl flex flex-col gap-2 px-8 py-2">
+            <div className="bg-white border border-gray-200 col-span-3 rounded-2xl flex flex-col gap-2 px-8 py-2">
               <h1>Summary</h1>
               <p>
-                A results-driven software engineer with 7+ years building scalable backend systems and leading cross-functional teams. Passionate about clean architecture, developer experience, and shipping products people love.
+                {item.basics.summary}
               </p>
             </div>
 
-            <div className="bg-red-400 col-span-3 rounded-2xl flex gap-2 p-5">
+            <div className="bg-white border border-gray-200 col-span-3 rounded-2xl flex gap-2 p-5">
                {item.stats.map(item=>(
                   <SkillCard count={item.count} type={item.type} />
                ))}
-              
             </div>
 
-            <div className="bg-red-400 col-span-2 row-span-2 rounded-2xl p-4">
-
+            <div className="bg-white border border-gray-200 col-span-2 row-span-2 rounded-2xl p-4">
                <h1>Work Experience</h1>
-
               <ul className="list-disc"> 
                  <li>
                 {item.experience.map(item=>(
@@ -131,27 +125,29 @@ export default function ReviewPage(){
                 ))}
                 </li>
               </ul>
-               
             </div>
 
-            <div className="bg-red-400 rounded-2xl px-4 py-2 flex flex-col gap-2">
+            <div className="bg-white border border-gray-200 rounded-2xl px-4 py-2 flex flex-col gap-2">
               <h3>Education</h3>
-              <div>
-                <h1>Bsc Computer Science</h1>
-                <h5>MIT.2016</h5>
-                <p>GPA 3.9 </p>
-              </div>
-              
+              {item.education.map((edu, i) => (
+                <div key={i}>
+                  <h1>{edu.degree}</h1>
+                  <h5>{edu.school}.{edu.year}</h5>
+                  <p>GPA {edu.gpa}</p>
+                </div>
+              ))}
             </div>
 
-            <div className="bg-red-400 rounded-2xl flex flex-col gap-2 p-4">
+            <div className="bg-white border border-gray-200 rounded-2xl flex flex-col gap-2 p-4">
               <h1>Certifications</h1>
               <ul className="flex flex-col gap-1 list-disc  pl-5 ">
-                <li>AWS SOLUTIONS ARCHITECT</li>
-                <li>Google cloud data</li>
+                {item.certifications.map((cert, i) => (
+                  <li key={i}>{cert.name}</li>
+                ))}
               </ul>
             </div>
-            <div className="bg-red-400 col-span-2 row-span-2 rounded-2xl p-4">
+
+            <div className="bg-white border border-gray-200 col-span-2 row-span-2 rounded-2xl p-4">
                <h1>Skills</h1>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {item.skills.map((skill, i) => (
@@ -169,7 +165,8 @@ export default function ReviewPage(){
                   ))}
                 </div>
             </div>
-            <div className="bg-red-400 rounded-2xl p-4">
+
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
               <h1>Languages</h1>
               {item.languages.map((lang, i) => (
                 <div key={i}>
@@ -186,8 +183,18 @@ export default function ReviewPage(){
                 </div>
               ))}
             </div>
-            <div className="bg-red-400 rounded-2xl"></div>
-            
+
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+              <h1>Projects</h1>
+              {item.projects.map((proj, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <div>
+                    <p className="text-sm font-medium">{proj.name}</p>
+                    <p className="text-xs text-gray-500">{proj.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
 
          </div>))}
         </>
